@@ -79,9 +79,39 @@ public class CarControllerTest {
         mvc.perform(
                 post(new URI("/cars"))
                         .content(json.write(car).getJson())
-                        .contentType(MediaType.APPLICATION_JSON_UTF8)
-                        .accept(MediaType.APPLICATION_JSON_UTF8))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
+    }
+
+    /**
+     * Tests for successful update of car in the system
+     * @throws Exception when car update fails in the system
+     */
+    @Test
+    public void UpdateCar() throws Exception {
+        Car car = getCar();
+        car.setId(1L);
+        mvc.perform(
+                put(new URI("/cars/" + car.getId()))
+                        .content(json.write(car).getJson())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id",is(1)))
+                .andExpect(jsonPath("location.lat",is(car.getLocation().getLat())))
+                .andExpect(jsonPath("location.lon",is(car.getLocation().getLon())))
+                .andExpect(jsonPath("details.manufacturer.code",is(car.getDetails().getManufacturer().getCode())))
+                .andExpect(jsonPath("details.manufacturer.name",is(car.getDetails().getManufacturer().getName())))
+                .andExpect(jsonPath("details.body",is(car.getDetails().getBody())))
+                .andExpect(jsonPath("details.model",is(car.getDetails().getModel())))
+                .andExpect(jsonPath("details.numberOfDoors",is(car.getDetails().getNumberOfDoors())))
+                .andExpect(jsonPath("details.fuelType",is(car.getDetails().getFuelType())))
+                .andExpect(jsonPath("details.engine",is(car.getDetails().getEngine())))
+                .andExpect(jsonPath("details.mileage",is(car.getDetails().getMileage())))
+                .andExpect(jsonPath("details.modelYear",is(car.getDetails().getModelYear())))
+                .andExpect(jsonPath("details.productionYear",is(car.getDetails().getProductionYear())))
+                .andExpect(jsonPath("details.externalColor",is(car.getDetails().getExternalColor())));
     }
 
     /**
