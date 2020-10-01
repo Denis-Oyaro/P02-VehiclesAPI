@@ -1,13 +1,8 @@
 package com.udacity.vehicles.api;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -19,8 +14,12 @@ import com.udacity.vehicles.domain.car.Car;
 import com.udacity.vehicles.domain.car.Details;
 import com.udacity.vehicles.domain.manufacturer.Manufacturer;
 import com.udacity.vehicles.service.CarService;
+import static org.hamcrest.Matchers.is;
+
 import java.net.URI;
 import java.util.Collections;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,6 +95,27 @@ public class CarControllerTest {
          *   the whole list of vehicles. This should utilize the car from `getCar()`
          *   below (the vehicle will be the first in the list).
          */
+        Car car = getCar();
+
+        mvc.perform(get("/cars"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content.length()",is(1)))
+                .andExpect(jsonPath("content[0].location.lat",is(car.getLocation().getLat())))
+                .andExpect(jsonPath("content[0].location.lon",is(car.getLocation().getLon())))
+                .andExpect(jsonPath("content[0].details.manufacturer.code",is(car.getDetails().getManufacturer().getCode())))
+                .andExpect(jsonPath("content[0].details.manufacturer.name",is(car.getDetails().getManufacturer().getName())))
+                .andExpect(jsonPath("content[0].details.body",is(car.getDetails().getBody())))
+                .andExpect(jsonPath("content[0].details.model",is(car.getDetails().getModel())))
+                .andExpect(jsonPath("content[0].details.numberOfDoors",is(car.getDetails().getNumberOfDoors())))
+                .andExpect(jsonPath("content[0].details.fuelType",is(car.getDetails().getFuelType())))
+                .andExpect(jsonPath("content[0].details.engine",is(car.getDetails().getEngine())))
+                .andExpect(jsonPath("content[0].details.mileage",is(car.getDetails().getMileage())))
+                .andExpect(jsonPath("content[0].details.modelYear",is(car.getDetails().getModelYear())))
+                .andExpect(jsonPath("content[0].details.productionYear",is(car.getDetails().getProductionYear())))
+                .andExpect(jsonPath("content[0].details.externalColor",is(car.getDetails().getExternalColor())));
+
+
+
 
     }
 
@@ -109,6 +129,26 @@ public class CarControllerTest {
          * TODO: Add a test to check that the `get` method works by calling
          *   a vehicle by ID. This should utilize the car from `getCar()` below.
          */
+        Car car = getCar();
+        car.setId(1L);
+
+        mvc.perform(get("/cars/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id",is(1)))
+                .andExpect(jsonPath("location.lat",is(car.getLocation().getLat())))
+                .andExpect(jsonPath("location.lon",is(car.getLocation().getLon())))
+                .andExpect(jsonPath("details.manufacturer.code",is(car.getDetails().getManufacturer().getCode())))
+                .andExpect(jsonPath("details.manufacturer.name",is(car.getDetails().getManufacturer().getName())))
+                .andExpect(jsonPath("details.body",is(car.getDetails().getBody())))
+                .andExpect(jsonPath("details.model",is(car.getDetails().getModel())))
+                .andExpect(jsonPath("details.numberOfDoors",is(car.getDetails().getNumberOfDoors())))
+                .andExpect(jsonPath("details.fuelType",is(car.getDetails().getFuelType())))
+                .andExpect(jsonPath("details.engine",is(car.getDetails().getEngine())))
+                .andExpect(jsonPath("details.mileage",is(car.getDetails().getMileage())))
+                .andExpect(jsonPath("details.modelYear",is(car.getDetails().getModelYear())))
+                .andExpect(jsonPath("details.productionYear",is(car.getDetails().getProductionYear())))
+                .andExpect(jsonPath("details.externalColor",is(car.getDetails().getExternalColor())));
+
     }
 
     /**
@@ -122,6 +162,10 @@ public class CarControllerTest {
          *   when the `delete` method is called from the Car Controller. This
          *   should utilize the car from `getCar()` below.
          */
+        mvc.perform(delete("/cars/1"))
+                .andExpect(status().isNoContent());
+
+
     }
 
     /**

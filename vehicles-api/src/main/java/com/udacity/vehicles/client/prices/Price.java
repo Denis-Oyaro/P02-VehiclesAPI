@@ -1,5 +1,6 @@
 package com.udacity.vehicles.client.prices;
 
+
 import java.math.BigDecimal;
 
 /**
